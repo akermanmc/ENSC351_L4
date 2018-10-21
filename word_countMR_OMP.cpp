@@ -83,10 +83,12 @@ int main(){
         pairArray[i] = mapFunc(wordArray[i]);
     }
 
+/*
     // FOR NOW: go back to vectors for reduction phase
     for (int i = 0; i<num_words; i++){
     	pair_vector.push_back(pairArray[i]);
     }
+*/
 
     // STEP 3: reduce: send vectors of duplicates to reduce function
     //#pragma omp critical
