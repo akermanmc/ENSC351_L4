@@ -4,15 +4,29 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
-#include <unistd.h>
 #include <string.h>
-#include <utility>
 #include <vector>   
 #include <algorithm>
+
 #define StringIntPair pair<string, int>
 using namespace std;
 
-int count = 0;
+// input function
+vector<string> inputReadFunc(vector<string> &word_vector){
+	string word;
+	ifstream inFile;
+
+    inFile.open("words.txt");
+    if(!inFile.is_open()){
+        cout << "open failed, word_vector empty" << endl; 
+        return word_vector;
+    }
+	while (inFile >> word){
+		word_vector.push_back(word);
+	}
+	inFile.close();
+	return word_vector;
+}
 
 // map function
 StringIntPair mapFunc(const string &word){
@@ -31,6 +45,13 @@ StringIntPair reduceFunc(vector<StringIntPair> dup_vector){
     return combined_pair;
 }
 
+//output function
+void outputFunc(const vector<StringIntPair> &reduced_vector){
+	for (int i = 0; i<reduced_vector.size(); i++){
+		cout << reduced_vector[i].first << "," << reduced_vector[i].second << endl;
+	}
+}
+
 bool compFuncDescending(const StringIntPair a, const StringIntPair b)
 {
     return (a.second > b.second);
@@ -42,22 +63,9 @@ int main(){
     vector<StringIntPair> dup_vector;   // holds duplicate pairs to be reduced
     vector<StringIntPair> used_vector;  // keeps track of which pairs have been tested for duplicity
     vector<StringIntPair> reduced_vector;   // holds the final reduced pairs for word_count output
-    string word;
 
     // STEP 1: read in file
-    ifstream inFile;
-    inFile.open("words.txt");
-    if(!inFile.is_open()){
-        cout << "open failed" << endl; 
-        return 1;
-    }
-
-    while (inFile >> word){
-        word_vector.push_back(word);
-        //count ++;
-    }
-
-    inFile.close();
+    word_vector = inputReadFunc(word_vector);
 
     // STEP 2: map
     for (int i = 0; i<word_vector.size(); i++){
@@ -81,12 +89,10 @@ int main(){
     }
 
     // STEP 3.5: sort the reduced vector in descending
-    std::sort(reduced_vector.begin(), reduced_vector.end(), compFuncDescending);
+    sort(reduced_vector.begin(), reduced_vector.end(), compFuncDescending);
 
     // STEP 4: output
-    for (int i = 0; i<reduced_vector.size(); i++){
-        cout << reduced_vector[i].first << "," << reduced_vector[i].second << endl;
-    }
+    outputFunc(reduced_vector);
 
     return 0;
 
